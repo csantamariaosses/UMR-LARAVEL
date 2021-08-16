@@ -18,6 +18,10 @@ class Ciclo2 extends Model
     }
 
     public function medico(){
-        return $this->belongsTo( 'App\Models\Medico');
+        return $this->belongsTo( 'App\Models\Medico');        
+    }
+
+    public function estadociclo(){
+        return $this->belongsTo( 'App\Models\Estadociclo');
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Paciente;
 use App\Models\Conyuge;
 use App\Models\Medico;
 use App\Models\Procedimientolaboratorio;
+use App\Models\Estadociclo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -51,19 +52,17 @@ class Ciclo2Controller extends Controller
     public function store(Request $request)
     {
         //
-        echo "<br>Guardar";
         $conyuge_id = 0;
         $rutPaciente = $request->input("rutPaciente");
-        //$rutConyuge  = $request->input("rutConyuge");
-        //$rutMedico = $request->input("rutMedico");
-
-        echo "<br>RutPac:" . $rutPaciente;
+       
         $paciente = Paciente::where('rut','=',$rutPaciente)->get()->first();
-        echo "<br>Paciente:" . $paciente;
-        echo "<br>rutConyuge:" . $paciente->rutConyuge;
+        if( $paciente == null ) {
+            $msg = "Paciente no existe, favor ingresarlo..";
+            $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");
+            return view("ciclo2s.index",compact('ciclo2s','msg')); 
+        }
         
         $conyuge  = Conyuge::where('rut','=',$paciente->rutConyuge)->get()->first();
-        echo "<br>Conyuge;:" . $conyuge;
         
 
         if( $conyuge == null ) {
@@ -76,10 +75,6 @@ class Ciclo2Controller extends Controller
         $ciclo2->medico_id = null;
         $ciclo2->paciente_id = $paciente->id;  
         $ciclo2->conyuge_id = $conyuge_id;  
-
-        $ciclo2->observaciones = "BLABLAL";
-        $ciclo2->observaciones = "BLABLAL";
-        $ciclo2->observaciones = "BLABLAL";
 
         $ciclo2->fechaRegla = Carbon::now();
         $ciclo2->culdosentesis = 0;  
@@ -119,9 +114,10 @@ class Ciclo2Controller extends Controller
         $ciclo2    = Ciclo2::find( $ciclo2->id );
         $procedLabs = Procedimientolaboratorio::all();
         $medicos = Medico::all();
+        $estadociclos = Estadociclo::all();
    
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
-        return view('ciclo2s.edit', compact('ciclo2s','ciclo2','procedLabs','medicos'));
+        return view('ciclo2s.edit', compact('ciclo2s','ciclo2','procedLabs','medicos','estadociclos'));
     }
 
     /**
@@ -145,7 +141,7 @@ class Ciclo2Controller extends Controller
     public function update(Request $request, Ciclo2 $ciclo2)
     {
         //
-        echo "Update...";
+      
 
         $msg = "";
         // DATOS PACIENTE
@@ -174,13 +170,10 @@ class Ciclo2Controller extends Controller
         // MEDICO
         $medico = $request->input("medico");
         if ( $medico == 0 ) {
-            echo "medico 0";
             $medico = null;
         }
         
-     
-
-
+    
         // PROCEDS  PABELLON
         $culdo = $request->input("culdosentesis");
         $transf = $request->input("transferencia");
@@ -191,8 +184,24 @@ class Ciclo2Controller extends Controller
         $observacionesCiclo = $request->input("observacionesCiclo");
 
         // BETA POSITIVO-NEGATIVO
-        $betaPositivo = $request->input("BetaPositivo");
-        $betaNegativo = $request->input("BetaNegativo");
+        $betaPositivo = 0;
+        $betaNegativo = 0;
+
+        $beta = $request->input("beta");
+        if ( $beta !=  null  )  {
+            if( $beta == 1) {
+                $betaPositivo = 1;
+                $betaNegativo = 0;
+            } else {
+                $betaPositivo = 0;
+                $betaNegativo = 1;
+            }
+        }
+
+        $fechaBeta = $request->input("fechaBeta");
+        if( $fechaBeta == null ) {
+            $fechaBeta = "";
+        }
 
         // PROCEDIMIENTOS LABORATORIO NOMBRES
         $procedLabs = Procedimientolaboratorio::all();
@@ -225,6 +234,8 @@ class Ciclo2Controller extends Controller
         // RESULTADO FECUNDACION
         $resultadoFecund = $request->input("resultadoFecund");
 
+        // ESTADO CICLO
+        $estadociclo = $request->input("estadociclo"); 
 
       
         // VALIDACIONES
@@ -252,11 +263,15 @@ class Ciclo2Controller extends Controller
         if( $fechaCuldosentesis == null ) { $fechaCuldosentesis = ""; }
         if( $fechaTransferencia == null ) { $fechaTransferencia = ""; }
         if( $resultadoFecund == null ) { $resultadoFecund = ""; }
+        if( $estadociclo == null ) { $estadociclo = ""; }
         if( $observacionesCiclo == null ) { $observacionesCiclo = ""; }
 
-        //echo "<br>Culdo:" . $culdo;
+        echo "estado ciclo:" . $estadociclo;
+
+     
 
 
+        
         $aco   = $request->input("aco");
         $regla = $request->input("regla");
         $hgc   = $request->input("hgc");
@@ -291,7 +306,7 @@ class Ciclo2Controller extends Controller
             $conyuge->telefono = $telefonoConyuge;
             $conyuge->fechaNacimiento = $fechaNacConyuge;
             $conyuge->antecedMorbidos = $antecMorbConyuge;
-            $conyuge->observaciones = $observaciones;
+            $conyuge->observaciones = $observacionesConyuge;
             $conyuge->save();
     
         }
@@ -314,6 +329,10 @@ class Ciclo2Controller extends Controller
         $ciclo2->hgc = $hgc;
         $ciclo2->resultadoBetaHgc = $resultadoBetaHGC;
         $ciclo2->resultadoFecund = $resultadoFecund;
+        $ciclo2->betaPositivo = $betaPositivo;
+        $ciclo2->betaNegativo = $betaNegativo;
+        $ciclo2->fechaBeta = $fechaBeta;
+        $ciclo2->estadociclo_id = $estadociclo;
         $ciclo2->observaciones = $observacionesCiclo;
         
         $ciclo2->save();
@@ -340,5 +359,11 @@ class Ciclo2Controller extends Controller
         $msg = "Ciclo eliminado...";
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
         return view("ciclo2s.index",compact('ciclo2s', 'msg'));
+    }
+
+    public function listadoCiclos(){
+        $msg = "";
+        $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
+        return view("ciclo2s.listado",compact('ciclo2s','msg'));
     }
 }

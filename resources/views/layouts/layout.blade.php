@@ -7,14 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+    @yield('css')    
 <style>
     .listado {
         font-family:Arial;
         font-size:12px;
-        width:80%;
+        width:100%;
+    }
+
+
+    .listado tr {
+        height:12px;
     }
 
     .verde {
@@ -23,6 +26,49 @@
     }
     .datosPaciente input {
         margin-bottom: 0.3em;
+    }
+
+
+    .white {
+        color:black;
+        background:white;   
+        font-size:9px;
+    }
+
+    .green {
+        background:green;
+        color:white;      
+        font-size:9px; 
+    }
+
+    .yellow {
+        color:black;
+        background:yellow; 
+        font-size:9px; 
+    
+    }
+
+    .brown {
+        color:white;
+        background:#996633;  
+        font-size:9px; 
+    }
+
+    .orange {
+        color:black;
+        background:#ff6600; 
+        font-size:9px; 
+    
+    }
+    .alturaFila {
+        height:30px;
+    }
+    .botonListado {
+        font-size:9px;
+    }
+
+    .botonEstadoCiclo {
+        font-size:9px;
     }
 </style>
 </head>
@@ -55,6 +101,7 @@
                 <li><a href="{{url('/procedimientoLaboratorio')}}">De Laboratorio</a></li>
                 </ul>
             </li>
+            <li><a href="{{ url('/estadociclos') }}">Estado Ciclos</a></li>
             <li><a href="{{ url('/medicos') }}">Médicos</a></li>
             <li><a href="{{ url('/ciclos') }}">Ciclos</a></li>
 
@@ -66,7 +113,7 @@
                 <li><a href="{{ url('/cicloPacientes') }}">Agregar Paciente</a></li>
                 <li><a href="{{ url('/ciclo2s') }}">Crear Ciclos Especial</a></li>
 
-                <li><a href="{{ url('/ciclosListado') }}">Listado General</a></li>
+                <li><a href="{{ url('/ciclosListado') }}">Listado ciclos</a></li>
                 </ul>
             </li>
 
@@ -79,5 +126,8 @@
 </div>
 
 @yield('content')  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+@yield('js')
 </body>
 </html>

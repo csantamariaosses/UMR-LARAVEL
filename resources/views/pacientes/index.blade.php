@@ -18,7 +18,7 @@
                  @csrf
                  <p>DATOS PACIENTE</p>
                  <table class="datosPaciente">
-                     <tr><td align="right">Rut:&nbsp;</td><td><input type="text" name="rut"  id="rut" required></td></tr>
+                     <tr><td align="right">Rut:&nbsp;</td><td><input type="text" name="rut"  id="rut" onBlur="verifRut( this)" required></td></tr>
                      <tr><td align="right">Nombre:&nbsp;</td><td><input type="text" name="nombre"  id="nombre" size="60" required></td></tr>
                      <tr><td align="right">Direccion:&nbsp;</td><td><input type="text" name="direccion"  id="direccion" size="60"></td></tr>
                      <tr><td align="right">Email:&nbsp;</td><td><input type="email" name="email"  id="email" size="60" required></td></tr>
@@ -119,4 +119,5 @@
 </div>
  @endforeach
 @stop
-
+<script>
+</script>

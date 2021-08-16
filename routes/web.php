@@ -42,13 +42,16 @@ Route::resource('pacientes','App\Http\Controllers\PacienteController');
 // CONYUGES
 Route::resource('conyuges','App\Http\Controllers\ConyugeController');
 
+// CONYUGES
+Route::resource('estadociclos','App\Http\Controllers\EstadocicloController');
+
 // CICLOS
 Route::resource('ciclos','App\Http\Controllers\CicloController');
 
 // CICLOS2
 Route::resource('ciclo2s','App\Http\Controllers\Ciclo2Controller');
 
-Route::get('ciclosListado','App\Http\Controllers\CicloController@listado');
+Route::get('ciclosListado','App\Http\Controllers\Ciclo2Controller@listadoCiclos');
 
 Route::get('ciclosTest','App\Http\Controllers\CicloController@test');
 Route::post('ciclosTest','App\Http\Controllers\CicloController@guardar');

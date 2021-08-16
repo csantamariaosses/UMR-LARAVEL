@@ -15,6 +15,7 @@
                  @csrf
                  <p><b>DATOS PACIENTE</b></p>  
                 <table class="datosPaciente">
+                     <tr><td align="right">ID. CICLO:&nbsp;</td><td><input type="text" name="idCiclo"  id="idCiclo" value="{{ $ciclo2->id}}" disabled></td></tr>
                      <tr><td align="right">Rut:&nbsp;</td><td><input type="text" name="rut"  id="rut" value="{{ $ciclo2->paciente->rut}}"></td></tr>
                      <tr><td align="right">Nombre:&nbsp;</td><td><input type="text" name="nombre"  id="nombre" size="60" value="{{ $ciclo2->paciente->nombre}}"></td></tr>
                      <tr><td align="right">Direccion:&nbsp;</td><td><input type="text" name="direccion"  id="direccion" size="60"  value="{{ $ciclo2->paciente->direccion}}"></td></tr>
@@ -175,8 +176,13 @@
 
                 <br><br>
                 <p><b>BETA POSITIVO-NEGATIVO</b></p>
-                <input type="text" name="BetaPositivo"  id="BetaPositivo" value="{{ $ciclo2->betaPositivo}}">                
-                <input type="text" name="BetaNegativo"  id="BetaNegativo" value="{{ $ciclo2->betaNegativo}}">                
+                <div>
+                <table width="100%">
+                  <tr><td><input type="radio" id="beta" name="beta" value="1" {{ $ciclo2->betaPositivo == 1 ? 'checked' : '' }}> Beta Positivo</td><td>&nbsp;&nbsp;Fecha:<input type="date" name="fechaBeta"  name="fechaBeta" value="{{ $ciclo2->fechaBeta}}"></td></tr>
+                  <tr><td><input type="radio" id="beta" name="beta" value="0" {{ $ciclo2->betaNegativo == 1 ? 'checked' : '' }}> Beta Negativo</td><td></td></tr>
+                </table>
+                </div>
+    
 
                 <br><br>
                 <p><b>PROCEDIMIENTOS LABORATORIO</b></p>
@@ -210,8 +216,18 @@
                 <input type="text" name="resultadoFecund" id="resultadoFecund" value="{{ $ciclo2->resultadoFecund}}"  size="60">
 
                 <br><br>
+                <p><b>ESTADO CICLO</b></p>
+                <select name="estadociclo">
+                        <option value="0" selected>Seleccione...</option>
+                        @foreach ($estadociclos as $key => $value)
+                                                    
+                            <option value="{{ $value->id }}" {{ $value->id == $ciclo2->estadociclo->id? 'selected':''}}>{{ $value->nombre }}</option>
+                        @endforeach
+                </select>
+
+                <br><br>
                 <p><b>OBSERVACIONES</b></p>
-                <textarea name="observacionesCiclo" cols="60" rows="2">{{ $ciclo2->observacionesCiclo}}</textarea>
+                <textarea name="observacionesCiclo" cols="60" rows="2">{{ $ciclo2->observaciones}}</textarea>
 
 
                 <BR>

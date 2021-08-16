@@ -15,6 +15,12 @@ class CreateCiclo2sTable extends Migration
     {
         Schema::create('ciclo2s', function (Blueprint $table) {
             $table->id();
+            
+            $table->unsignedBigInteger('estadociclo_id')->nullable();
+            $table->foreign('estadociclo_id')
+             ->references('id')
+             ->on('estadociclos');
+
             $table->unsignedBigInteger('medico_id')->nullable();
             $table->foreign('medico_id')
              ->references('id')

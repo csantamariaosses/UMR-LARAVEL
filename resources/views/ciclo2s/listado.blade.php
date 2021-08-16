@@ -7,7 +7,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-           <h4>CICLOS</h4>
+           <h4>LISTADO - CICLOS</h4>
         </div>
     </div>
     <hr>
@@ -16,19 +16,43 @@
         <div class="alert alert-danger">{{$msg}}</div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-sm-6">
+    <div class="row">
+        <div class="col-sm-4">
+        <div><b>Regla</b></div>
+        </div>
+        <div class="col-sm-4">
+        <div><b>Estado Ciclo</b></div>
+        </div>
+        <div class="col-sm-4">
+        <div><b>Procedimiento</b></div>
+        </div>
+    </div>
+
+    <div class="row mt-4">        
+       
              <form method="POST" action="/ciclo2s">
                  @csrf
+                 <div class="col-sm-4">
                  <table>
-                     <tr><td align="right">Rut Paciente:&nbsp;</td><td><input type="text" name="rutPaciente"  id="rutPaciente" required></td></tr>
-                    <!--  <tr><td align="right">Rut Conyuge:&nbsp;</td><td><input type="text" name="rutConyuge"  id="rutConyuge" required></td></tr>
-                     <tr><td align="right">Rut Medico:&nbsp;</td><td><input type="text" name="rutMedico"  id="rutMedico" required></td></tr>-->
+                     <tr><td align="right">Fecha Desde:&nbsp;</td><td><input type="date" name="fechaDesde"  id="fechaDesde" required></td></tr>
+                     <tr><td align="right">Fecha Hasta:&nbsp;</td><td><input type="date" name="fechaHasta"  id="fechaHasta" required></td></tr>
+                     
+                </table>
+                </div>
+                <div class="col-sm-4">
+                 <table>
+                     <tr><td align="right">Estado:&nbsp;</td><td><select name="estadociclo"><option>Seleccione...</option></select></td></tr>
                      <tr><td></td><td><button type="submit" class="btn btn-secondary">Crear Ciclo</button></td></tr>
                 </table>
+                </div>
             </form>
-        </div>
+        
         <div class="col-sm-6">            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+        <div><b>Regla</b></div>
         </div>
     </div>
 </div>
@@ -55,24 +79,7 @@
                 @foreach($ciclo2s as $ciclo2 )
                 <tr>
                     <td>{{ $ciclo2->id}}</td>
-        
-        
-                    @if( $ciclo2->estadociclo->nombre == "SIN EMPEZAR")
-                      <td><button type="button" class="botonEstadoCiclo white  btn-block" >{{ $ciclo2->estadociclo->nombre }}</button></td>
-                    @endif
-
-                    @if( $ciclo2->estadociclo->nombre == "INICIADO")
-                      <td><button type="button" class="botonEstadoCiclo brown btn-block" >{{ $ciclo2->estadociclo->nombre }}</button></td>
-                    @endif
-                    @if( $ciclo2->estadociclo->nombre == "EN EVOLUCION")
-                      <td><button type="button" class="botonEstadoCiclo yellow  btn-block" >{{ $ciclo2->estadociclo->nombre }}</button></td>
-                    @endif
-                    @if( $ciclo2->estadociclo->nombre == "TERMINADA")
-                      <td><button type="button" class="botonEstadoCiclo green  btn-block" >{{ $ciclo2->estadociclo->nombre }}</button></td>
-                    @endif
-                    @if( $ciclo2->estadociclo->nombre == "CANCELADA")
-                      <td><button type="button" class="botonEstadoCiclo orange  btn-block" >{{ $ciclo2->estadociclo->nombre }}</button></td>
-                    @endif
+                    <td>{{ $ciclo2->estadociclo->nombre }}</td>
                     <td>{{ $ciclo2->paciente->rut }}</td>
                     <td>{{ $ciclo2->paciente->nombre }}</td>
                     <td>@if(is_null( $ciclo2->conyuge) )
@@ -91,8 +98,8 @@
                     <td>{{ $ciclo2->updated_at }}</td>
                     <td>
                      <div>
-                    <a href="/ciclo2s/{{$ciclo2->id}}" class="btn btn-success botonListado">Editar</a>  
-                    <button type="button" class="btn btn-danger botonListado" data-toggle="modal" data-target="#myModal{{$ciclo2->id}}">x</button>     
+                    <a href="/ciclo2s/{{$ciclo2->id}}" class="btn btn-success">Editar</a>  
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal{{$ciclo2->id}}">x</button>     
                     </div>
                     </td></tr>
 
