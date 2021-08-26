@@ -64,8 +64,8 @@ class ConyugeController extends Controller
         $registro = Conyuge::where('rut', '=', $rutC)->get()->count();
         if( $registro > 0  ) {
             $msg =  $msg ."\nConyuge Ya Existe...!";
-            $registros = Conyuge::all()->sortByDesc("updated_at");
-            return view("conyuges.index",compact('registros', 'msg'));
+            $conyuges = Conyuge::all()->sortByDesc("updated_at");
+            return view("conyuges.index",compact('conyuges', 'msg'));
         } else {
             $msg  = $msg . "Agregando conyuge...";
             //echo "FechaNac:" . $fechaNac;
@@ -82,6 +82,7 @@ class ConyugeController extends Controller
 
             $registro->save();
             $conyuges = Conyuge::all()->sortByDesc("updated_at");
+            //dd( $conyuges);
             $msg = $msg . "\nConyuge agregado exitosamente";
             return view("conyuges.index",compact('conyuges', 'msg'));
         }
@@ -98,9 +99,10 @@ class ConyugeController extends Controller
     public function show(Conyuge $conyuge)
     {
         //
+        $msg = "";
         $conyuge  = Conyuge::find( $conyuge->id );
         $conyuges = Conyuge::all()->sortByDesc("updated_at");
-        return view('conyuges.edit', compact('conyuge','conyuges'));
+        return view('conyuges.edit', compact('conyuge','conyuges','msg'));
 
     }
 
@@ -158,7 +160,7 @@ class ConyugeController extends Controller
 
         $registro->save();
 
-        $msg = $msg . "Paciente actualizado";
+        $msg = $msg . "Registro actualizado";
         $conyuges = Conyuge::all()->sortByDesc("updated_at");
         $conyuge   = Conyuge::find( $registro->id );
         return view("conyuges.index",compact('conyuges', 'msg'));
@@ -179,5 +181,12 @@ class ConyugeController extends Controller
         $msg = "Eliminado exitosamente";
         $conyuges = Conyuge::all()->sortByDesc("updated_at");;
         return view("conyuges.index",compact('conyuges','msg'));
+    }
+
+
+    public function rut( Request $request ) {
+        $rutConyuge = Conyuge::where('rut','=',$request->get("rut"))->get()->first();
+    
+        return response()->json( ['success'=> $rutConyuge]);
     }
 }

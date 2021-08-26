@@ -8,8 +8,9 @@ use App\Models\Medico;
 class MedicosController extends Controller
 {
     public function index() {
+        $msg = "";
         $medicos = Medico::all()->sortByDesc("updated_at");
-        return view("medicos.index",compact('medicos'));
+        return view("medicos.index",compact('medicos','msg'));
     }
     
 
@@ -27,19 +28,21 @@ class MedicosController extends Controller
         $medico->especialidad = $especialidad;
         $medico->save();
 
+        $msg = "";
         $medicos = Medico::all()->sortByDesc("updated_at");;
-        return view("medicos.index",compact('medicos'));
+        return view("medicos.index",compact('medicos','msg'));
     }
 
 
     public function destroy( $id ) {
 
-        echo "Eliminando...";
+        //echo "Eliminando...";
+        $mag = "Registro eliminado";
         $medico = Medico::find($id);        
         $medico->delete();
 
         $medicos = Medico::all()->sortByDesc("updated_at");;
-        return view("medicos.index",compact('medicos'));
+        return view("medicos.index",compact('medicos','msg'));
     }
 
     public function edit($id)
@@ -52,9 +55,10 @@ class MedicosController extends Controller
     {
         //
 
+        $msg = "";
         $medico = Medico::find($id);
         $medicos = Medico::all()->sortByDesc("updated_at");;
-        return view('medicos.edit', compact('medico','medicos'));
+        return view('medicos.edit', compact('medico','medicos','msg'));
     }
 
     public function update(Request $request, $id)
@@ -71,9 +75,10 @@ class MedicosController extends Controller
         $medico->nombre = $request->input('nombre');
         $medico->especialidad = $especialidad;
         $medico->save();
+        $msg = "Registro actualizado...";
 
         $medicos = Medico::all()->sortByDesc("updated_at");;
-        return view("medicos.index",compact('medicos'));
+        return view("medicos.index",compact('medicos','msg'));
     }
 
 

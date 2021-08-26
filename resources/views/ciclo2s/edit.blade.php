@@ -1,5 +1,10 @@
 @extends('layouts.layout')
 
+@section("css")
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css"/>
+@stop
+
 @section('content')
 <div class="container">
     <div class="row">
@@ -68,6 +73,7 @@
                                     name="fechaNacConyuge"  
                                     id="fechaNacConyuge"  
                                     value="">
+                                    &nbsp;&nbsp;Edad&nbsp;&nbsp;años
                                 </td></tr>
                      <tr><td align="right">Antec. Morbidos:&nbsp;</td><td><input 
                                     type="text" 
@@ -119,6 +125,7 @@
                                     name="fechaNacConyuge"  
                                     id="fechaNacConyuge"  
                                     value="{{ $ciclo2->conyuge->fechaNacimiento}}">
+                                    &nbsp;&nbsp;Edad:@if( $ciclo2->conyuge->edad != null ) {{$ciclo2->conyuge->edad}} @endif &nbsp;&nbsp;años
                                 </td></tr>
                      <tr><td align="right">Antec. Morbidos:&nbsp;</td><td><input 
                                     type="text" 
@@ -133,7 +140,18 @@
 
                 @endif
 
-                <hr>
+                <br><br>
+                <p><b>ESTADO CICLO</b></p>
+                <select name="estadociclo">
+                        <option value="0" selected>Seleccione...</option>
+                        @foreach ($estadociclos as $key => $value)
+                                                    
+                            <option value="{{ $value->id }}" {{ $value->id == $ciclo2->estadociclo->id? 'selected':''}}>{{ $value->nombre }}</option>
+                        @endforeach
+                </select>
+
+                <br><br>
+        
                 <p><b>MEDICO</b></p>
 
                     @if(is_null( $ciclo2->medico) )
@@ -152,9 +170,21 @@
                         @endforeach
                     </select>
 
-                    @endif
-                    
+                    @endif                    
 
+                 <br><br>
+                <p><b>REGLA</b></p>
+                <input type="date" name="fechaRegla" id="fechaRegla" value="{{ $ciclo2->fechaRegla}}"  size="60">
+
+                <br><br>
+                <p><b>HCG</b></p>
+                <input type="text" name="hcg" id="hcg" value="{{ $ciclo2->hcg}}"  size="10"><br>
+
+                <table>
+                    <tr><td>Fecha Hora Pabellon:</td><td><input type="datetime-local" name="fechaHoraPabellon" id="fechaHoraPabellon" value="{{ substr($ciclo2->fechaHoraPabellon,0,10)}}T{{substr($ciclo2->fechaHoraPabellon,11,5)}}"  size="10" onChange="restarHoras(this);"></td></tr>
+                    <tr><td>Fecha Hora HCG:::</td><td><input type="datetime-local" name="fechaHoraHCG" id="fechaHoraHCG" value="{{ substr($ciclo2->fechaHoraHCG,0,10)}}T{{substr($ciclo2->fechaHoraHCG,11,5)}}"  size="10" ></td></tr>
+    
+                </table>
                 <br><br>
                 <p><b>EXAMENES PABELLON</b></p>
                 <table width="100%">
@@ -199,33 +229,17 @@
                 <p><b>ACO</b></p>
                 <input type="text" name="aco" id="aco" value="{{ $ciclo2->aco}}" size="60">
          
-                <br><br>
-                <p><b>REGLA</b></p>
-                <input type="date" name="fechaRegla" id="fechaRegla" value="{{ $ciclo2->fechaRegla}}"  size="60">
+               
 
                 <br><br>
-                <p><b>HGC</b></p>
-                <input type="text" name="hgc" id="hgc" value="{{ $ciclo2->hgc}}"  size="10">
-
-                <br><br>
-                <p><b>RESULTADO BETA HGC</b></p>
-                <input type="text" name="resultadoBetaHGC" id="resultadoBetaHGC" value="{{ $ciclo2->resultadoBetaHgc}}"  size="10">
+                <p><b>RESULTADO BETA HCG</b></p>
+                <input type="text" name="resultadoBetaHCG" id="resultadoBetaHCG" value="{{ $ciclo2->resultadoBetaHgc}}"  size="10">
 
                 <br><br>
                 <p><b>RESULTADO FECUNDACION</b></p>
                 <input type="text" name="resultadoFecund" id="resultadoFecund" value="{{ $ciclo2->resultadoFecund}}"  size="60">
 
-                <br><br>
-                <p><b>ESTADO CICLO</b></p>
-                <select name="estadociclo">
-                        <option value="0" selected>Seleccione...</option>
-                        @foreach ($estadociclos as $key => $value)
-                                                    
-                            <option value="{{ $value->id }}" {{ $value->id == $ciclo2->estadociclo->id? 'selected':''}}>{{ $value->nombre }}</option>
-                        @endforeach
-                </select>
-
-                <br><br>
+                
                 <p><b>OBSERVACIONES</b></p>
                 <textarea name="observacionesCiclo" cols="60" rows="2">{{ $ciclo2->observaciones}}</textarea>
 
@@ -243,4 +257,35 @@
     </div>
 </div>
  <HR> 
+ <script>
+     console.log("aqui");
+     //document.getElementById("fechaHoraHgc").value = "2021-08-20T10:20";
+     function restarHoras( fechaHora ) {    
+
+         fechaHoraPabellon = document.getElementById("fechaHoraPabellon");     
+         const fechaHoraSel = fechaHora.value;
+         newFecha = new Date( fechaHoraSel );
+         newFecha.setHours( newFecha.getHours() - 36);
+
+         const agno = newFecha.getFullYear();
+         const mes = newFecha.getMonth()+1;
+         const dia = newFecha.getDate();
+         const horas = newFecha.getHours();
+         const minutos = newFecha.getMinutes();
+
+         strDia = "";
+         strMes = "";
+         strHoras = "";
+         strMinutos = "";
+         if( dia < 10 ) { strDia = "0" + dia.toString(); } else { strDia = dia.toString();}
+         if( mes < 10 ) { strMes = "0" + mes.toString(); } else { strMes = mes.toString();}
+         if( horas < 10 ) { strHoras = "0" + horas.toString(); } else { strHoras = horas.toString();}
+         if( minutos < 10 ) { strMinutos = "0" + minutos.toString(); } else { strMinutos = minutos.toString();}
+         
+         let strfechaHCG = agno.toString()+"-"+ strMes.toString()+"-"+ strDia.toString()+"T"+strHoras.toString()+":"+strMinutos.toString();
+        
+         $('#fechaHoraHCG').val( strfechaHCG  );
+
+     }
+</script>
 @stop

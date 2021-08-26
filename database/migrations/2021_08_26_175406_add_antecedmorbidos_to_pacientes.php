@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Procedimientopabellon extends Migration
+class AddAntecedmorbidosToPacientes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,8 @@ class Procedimientopabellon extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('procedimientoLaboratorios', function (Blueprint $table) {
-            $table->id();
-            $table->string('codigo');
-            $table->string('nombre');
-            $table->float('precio');
-            $table->timestamps();
+        Schema::table('pacientes', function (Blueprint $table) {
+            $table->string("antecedMorbidos")->after("diagnostico")->nullable();
         });
     }
 
@@ -30,6 +25,8 @@ class Procedimientopabellon extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('pacientes', function (Blueprint $table) {
+            //
+        });
     }
 }

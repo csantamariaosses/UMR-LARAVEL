@@ -7,6 +7,8 @@ use App\Models\Paciente;
 use App\Models\Conyuge;
 use App\Models\Medico;
 use App\Models\Procedimientolaboratorio;
+use App\Models\Procedimientopabellon;
+use App\Models\Procedimientopaciente;
 use App\Models\Estadociclo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -72,11 +74,12 @@ class Ciclo2Controller extends Controller
         }
         
         $ciclo2 = new Ciclo2();
+        $ciclo2->estadociclo_id = 1;
         $ciclo2->medico_id = null;
         $ciclo2->paciente_id = $paciente->id;  
         $ciclo2->conyuge_id = $conyuge_id;  
 
-        $ciclo2->fechaRegla = Carbon::now();
+        $ciclo2->fechaRegla = null;
         $ciclo2->culdosentesis = 0;  
         $ciclo2->fechaCuldosentesis = "";  
         $ciclo2->transferencia = 0;  
@@ -87,8 +90,8 @@ class Ciclo2Controller extends Controller
         $ciclo2->procedimientos = ""; 
         $ciclo2->codProcedimientos = ""; 
         $ciclo2->aco = "";  
-        $ciclo2->hgc = "";
-        $ciclo2->resultadoBetaHgc = "";            
+        $ciclo2->hcg = "";
+        $ciclo2->resultadoBetaHCG = "";            
         $ciclo2->resultadoFecund = "";
         $ciclo2->observaciones = "Observaciones";
 
@@ -99,7 +102,7 @@ class Ciclo2Controller extends Controller
         //echo "Pac:". $ciclo2s->paciente->nombre;
 
 
-        return view("ciclo2s.index",compact('ciclo2s','msg')); 
+        return view("ciclosListado",compact('ciclo2s','msg')); 
     }
 
     /**
@@ -111,13 +114,14 @@ class Ciclo2Controller extends Controller
     public function show(Ciclo2 $ciclo2)
     {
         //
+        $msg = "";
         $ciclo2    = Ciclo2::find( $ciclo2->id );
         $procedLabs = Procedimientolaboratorio::all();
         $medicos = Medico::all();
         $estadociclos = Estadociclo::all();
    
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
-        return view('ciclo2s.edit', compact('ciclo2s','ciclo2','procedLabs','medicos','estadociclos'));
+        return view('ciclo2s.edit', compact('ciclo2s','ciclo2','procedLabs','medicos','estadociclos','msg'));
     }
 
     /**
@@ -180,6 +184,18 @@ class Ciclo2Controller extends Controller
         $fechaCuldosentesis = $request->input("fechaCuldosentesis");
         $fechaTransferencia = $request->input("fechaTransferencia");
 
+
+
+        // HGC
+        $aco   = $request->input("aco");
+        $regla = $request->input("regla");
+        $hcg   = $request->input("hcg");
+        $fechaHoraHCG      = $request->input("fechaHoraHCG");
+        $fechaHoraPabellon = $request->input("fechaHoraPabellon");
+
+        $resultadoBetaHCG  = $request->input("resultadoBetaHCG");
+
+
         // OBSERVACIONES
         $observacionesCiclo = $request->input("observacionesCiclo");
 
@@ -206,13 +222,15 @@ class Ciclo2Controller extends Controller
         // PROCEDIMIENTOS LABORATORIO NOMBRES
         $procedLabs = Procedimientolaboratorio::all();
         $procedLabsStr = "";
-        //echo "<br>".$procedLabs;
+        
         foreach ( $procedLabs as $procedLab  ) {
             //echo "<br>". $procedLab->codigo;
             $proced = $request->input($procedLab->codigo);
             if( $proced != null ) {
                 //echo "Viene:" . $procedLab->codigo." ".$procedLab->nombre; 
                 $procedLabsStr.= "+".$procedLab->nombre;
+
+                
             }
         }
         $procedLabsStr = Str::replaceFirst('+', '',  $procedLabsStr);
@@ -244,7 +262,7 @@ class Ciclo2Controller extends Controller
         if( $email == null ) { $email = ""; }
         if( $telefono == null ) { $telefono = ""; }
         if( $fechaNac == null ) { $fechaNac = ""; }
-        if( $fechaRegla == null ) { $fechaRegla = ""; }
+        //if( $fechaRegla == null ) { $fechaRegla = ""; }
         if( $antecMorb == null ) { $antecMorb = ""; }
         if( $diagnostico == null ) { $diagnostico = ""; }
         if( $observaciones == null ) { $observaciones = ""; }
@@ -256,7 +274,7 @@ class Ciclo2Controller extends Controller
         if( $telefonoConyuge == null ) { $telefonoConyuge = ""; }
         if( $fechaNacConyuge == null ) { $fechaNacConyuge = 0; }
         if( $antecMorbConyuge == null ) { $antecMorbConyuge = 0; }
-        if( $observacionesConyuge == null ) { $observacionesConyuge = 0; }
+        if( $observacionesConyuge == null ) { $observacionesConyuge = ""; }
         
         if( $culdo == null ) { $culdo = 0; }
         if( $transf == null ) { $transf = 0; }
@@ -266,22 +284,12 @@ class Ciclo2Controller extends Controller
         if( $estadociclo == null ) { $estadociclo = ""; }
         if( $observacionesCiclo == null ) { $observacionesCiclo = ""; }
 
-        echo "estado ciclo:" . $estadociclo;
-
-     
-
-
-        
-        $aco   = $request->input("aco");
-        $regla = $request->input("regla");
-        $hgc   = $request->input("hgc");
-        $resultadoBetaHGC = $request->input("resultadoBetaHGC");
-
 
         if( $aco == null ) { $aco = ""; }
         if( $regla == null ) { $regla = ""; }
-        if( $hgc == null ) { $hgc = ""; }
-        if( $resultadoBetaHGC == null ) { $resultadoBetaHGC = ""; }
+        if( $hcg == null ) { $hcg = ""; }
+        //if( $fechaHoraHCG == null ) { $fechaHoraHCG = ""; }
+        if( $resultadoBetaHCG == null ) { $resultadoBetaHCG = ""; }
 
         // ACTUALIZA DATOS PACIENTE
         $paciente = Paciente::where('rut','=',$rut)->get()->first();
@@ -326,8 +334,12 @@ class Ciclo2Controller extends Controller
         $ciclo2->medico_id = $medico;
         $ciclo2->aco = $aco;
         $ciclo2->fechaRegla = $fechaRegla;
-        $ciclo2->hgc = $hgc;
-        $ciclo2->resultadoBetaHgc = $resultadoBetaHGC;
+        $ciclo2->hcg = $hcg;
+       
+
+        $ciclo2->fechaHoraHCG = $fechaHoraHCG;
+        $ciclo2->fechaHoraPabellon = $fechaHoraPabellon;
+        $ciclo2->resultadoBetaHCG = $resultadoBetaHCG;
         $ciclo2->resultadoFecund = $resultadoFecund;
         $ciclo2->betaPositivo = $betaPositivo;
         $ciclo2->betaNegativo = $betaNegativo;
@@ -337,9 +349,34 @@ class Ciclo2Controller extends Controller
         
         $ciclo2->save();
 
-        $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
-        return view("ciclo2s.index",compact('ciclo2s','msg'));
+
+        // ACTUALIZA TABLA PROCEDIMEINTOS
+        // Elimina procedimientos paciente
+        \DB::table('Procedimientopacientes')->where('rut', '=', $rut)->delete();
+        $procedLabs = Procedimientolaboratorio::all();        
+        foreach ( $procedLabs as $procedLab  ) {
+            $proced = $request->input($procedLab->codigo);
+            if( $proced != null ) {
+                $procedLabPacte = new Procedimientopaciente();
+                $procedLabPacte->ciclo2_id = $ciclo2->id;
+                $procedLabPacte->rut       = $rut;
+                $procedLabPacte->codigo    = $procedLab->codigo;
+                $procedLabPacte->save();
+            }
+        }
         
+
+
+
+
+        
+        $msg = "";
+        $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");
+        $estadociclos = Estadociclo::all();
+
+        $procedimientoPabs = Procedimientopabellon::all();
+        $procedimientoLabs = Procedimientolaboratorio::all();
+        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientoPabs','procedimientoLabs'));
 
 
     }
@@ -363,7 +400,72 @@ class Ciclo2Controller extends Controller
 
     public function listadoCiclos(){
         $msg = "";
-        $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
-        return view("ciclo2s.listado",compact('ciclo2s','msg'));
+        $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");
+        $estadociclos = Estadociclo::all();
+
+        $procedimientoPabs = Procedimientopabellon::all();
+        $procedimientoLabs = Procedimientolaboratorio::all();
+        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientoPabs','procedimientoLabs'));
+    }
+
+
+    public function filtrarCiclos(Request $request ) {
+
+        $fechaDesde = $request->input("fechaDesde");
+        $fechaHasta = $request->input("fechaHasta");
+        $estadociclo = $request->input("estadociclo");
+        $procedimientoPab = $request->input("procedimientoPab");
+
+        echo "<br>fechaDesde:" . $fechaDesde;
+        echo "<br>fechaHasta:" . $fechaHasta;
+        echo "<br>estado:" . $estadociclo;
+        echo "<br>procedimientoPab:" . $procedimientoPab;
+
+        $msg = "";
+        $ciclo2s = Ciclo2::whereBetween('fechaRegla', [$fechaDesde, $fechaHasta])
+                         //->where('estadociclo_id','=',$estadociclo)
+                         ->get();
+        /*
+
+        $sql = " select * from ciclo2s a";
+        $sql .= " inner join estadociclos b ";
+        $sql .= " on ( a.estadociclo_id = b.id )";
+        $sql .= " where ( true ) ";
+        if ($request->has('fechaDesde')) { 
+            $sql .= " and  fechaRegla >= '" . $fechaDesde."'";
+        }
+        if ($request->has('fechaHasta')) { 
+            $sql .= " and  fechaRegla <= '" . $fechaHasta."'";
+        }
+        if ($request->has('estadociclo')) { 
+            if ( $estadociclo > 0 ) { 
+                $sql .= " and  estadociclo_id <= '" . $estadociclo."'";
+            }
+        }
+        if ($request->has('procedimientoPab')) { 
+            if ( $procedimientoPab == '20-50-007-01' ) { 
+                $sql .= " and  culdosentesis = 1 ";
+            }
+        }
+
+        if ($request->has('procedimientoPab')) { 
+            if ( $procedimientoPab == '55-02-001-01' ) { 
+                $sql .= " and  transferencia = 1 ";
+            }
+        }
+        echo "<br>". $sql;
+        $ciclo2s = \DB::select($sql);
+        
+        //dd( $result );
+        //$ciclo2s = $result;
+        */
+
+        $estadociclos = Estadociclo::all();                         
+        $procedimientoPabs = Procedimientopabellon::all();
+        $procedimientoLabs = Procedimientolaboratorio::all();
+
+
+    
+        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientoPabs','procedimientoLabs'));
     }
 }

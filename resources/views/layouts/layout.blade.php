@@ -9,16 +9,36 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     @yield('css')    
 <style>
+
+    .listadoPacteConyuge {
+        font-family:Arial;
+        font-size:12px;
+        width:80%;
+    }
+
     .listado {
         font-family:Arial;
         font-size:12px;
-        width:100%;
+        width:90%;
     }
 
 
     .listado tr {
         height:12px;
     }
+
+    .listadoCiclos {
+        font-family:Arial;
+        font-size:12px;
+        width:180%;
+    }
+
+    .botonEliminar{
+        height:12px;
+        font-size: 7px;
+        color:white;
+    }
+
 
     .verde {
         color:green;
@@ -70,7 +90,12 @@
     .botonEstadoCiclo {
         font-size:9px;
     }
+
+    .regla {
+        background:#fff; 
+    }
 </style>
+
 </head>
 <body>
 
@@ -125,9 +150,27 @@
    </div>
 </div>
 
+@if( $msg !="")
+<div class="container">
+   <div class="row" id="msg">
+        <div class="col-sm-12">
+            <div class="alert alert-danger"><button class="btn btn-sm" onClick="cerrarMsg()">X</button> &nbsp;&nbsp;&nbsp;{{$msg}}</div>
+        </div>
+    </div>
+</div>
+@endif
+
 @yield('content')  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+    function cerrarMsg() {
+        console.log("Cerrar");
+        var x = document.getElementById("msg");
+        x.style.display = 'none';
+    }
+</script>
 @yield('js')
 </body>
 </html>

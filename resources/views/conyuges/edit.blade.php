@@ -15,12 +15,13 @@
                  @csrf
                 <p>DATOS CONYUGE</p>  
                 <table class="datosPaciente">
+                     <tr><td align="right">Id:&nbsp;</td><td><input type="text" name="idConyuge"  id="idConyuge" value="{{ $conyuge->id}}" disabled></td></tr>
                      <tr><td align="right">Rut:&nbsp;</td><td><input type="text" name="rutConyuge"  id="rutConyuge" value="{{ $conyuge->rut}}"></td></tr>
                      <tr><td align="right">Nombre:&nbsp;</td><td><input type="text" name="nombreConyuge"  id="nombreConyuge" size="60" value="{{ $conyuge->nombre}}"></td></tr>
                      <tr><td align="right">Direccion:&nbsp;</td><td><input type="text" name="direccionConyuge"  id="direccionConyuge" size="60"  value="{{ $conyuge->direccion}}"></td></tr>
                      <tr><td align="right">Email:&nbsp;</td><td><input type="email" name="emailConyuge"  id="emailConyuge" size="60"  value="{{ $conyuge->email}}"></td></tr>
                      <tr><td align="right">Telefono:&nbsp;</td><td><input type="text" name="telefonoConyuge"  id="telefonoConyuge"  value="{{ $conyuge->telefono}}"></td></tr>
-                     <tr><td align="right">Fecha Nac.:&nbsp;</td><td><input type="date" name="fechaNacConyuge"  id="fechaNacConyuge"  value="{{ $conyuge->fechaNacimiento}}"></td></tr>
+                     <tr><td align="right">Fecha Nac.:&nbsp;</td><td><input type="date" name="fechaNacConyuge"  id="fechaNacConyuge"  value="{{ $conyuge->fechaNacimiento}}">&nbsp;&nbsp;Edad:{{  $conyuge->edad }}&nbsp;&nbsp;años</td></tr>
                      <tr><td align="right">Antec. Morbidos:&nbsp;</td><td><input type="text" name="antecMorbConyuge"  id="antecMorbConyuge" size="60"  value="{{ $conyuge->antecedMorbidos}}"></td></tr>
                      <tr><td align="right">Observaciones:&nbsp;</td><td><textarea name="observacionesConyuge" cols="60" rows="3"> {{ $conyuge->observaciones}}</textarea></td></tr>
                      <tr><td></td><td><button type="submit" class="btn btn-secondary">Guardar</button><a class="btn btn-primary" href="{{route('conyuges.index')}}" role="button">Cancelar</a></td></tr>
@@ -46,7 +47,7 @@
 
         <div class="col-sm-12 justify-content-center">
             @if( count( $conyuges) >0 )    
-                <table class="table table-dark table-striped mt-4 listado">   
+                <table class="table table-dark table-striped mt-4 listadoPacteConyuge">   
                     <thead> 
                         <tr><td>Id</td><td>Rut</td><td>Nombre</td><td>Fecha</td><td>Edad</td><td>Acción</td></tr>
                     </thead>

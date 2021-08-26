@@ -15,8 +15,9 @@ class ProcedimientoLaboratorioController extends Controller
     public function index()
     {
         //
+        $msg = "";
         $procedLabs = Procedimientolaboratorio::all()->sortByDesc("updated_at");
-        return view("procedimientoLaboratorio.index",compact('procedLabs'));
+        return view("procedimientoLaboratorio.index",compact('procedLabs','msg'));
     }
 
     /**
@@ -57,8 +58,9 @@ class ProcedimientoLaboratorioController extends Controller
             $proced->save();
             
         }
+        $msg = "";
         $procedLabs = Procedimientolaboratorio::all()->sortByDesc("updated_at");;
-        return view("procedimientoLaboratorio.index",compact('procedLabs'));
+        return view("procedimientoLaboratorio.index",compact('procedLabs','msg'));
 
     }
 
@@ -72,8 +74,9 @@ class ProcedimientoLaboratorioController extends Controller
     {
         //
         $procedLab = Procedimientolaboratorio::find($id);
-        $procedLabs = Procedimientolaboratorio::all()->sortByDesc("updated_at");;
-        return view('procedimientoLaboratorio.edit', compact('procedLab','procedLabs'));
+        $procedLabs = Procedimientolaboratorio::all()->sortByDesc("updated_at");
+        $msg = "";
+        return view('procedimientoLaboratorio.edit', compact('procedLab','procedLabs','msg'));
     }
 
     /**
@@ -108,8 +111,9 @@ class ProcedimientoLaboratorioController extends Controller
         $registro->precio = $precio;
         $registro->save();
 
+        $msg = "Registro actualizado...";
         $procedLabs = Procedimientolaboratorio::all()->sortByDesc("updated_at");;
-        return view("procedimientolaboratorio.index",compact('procedLabs'));
+        return view("procedimientolaboratorio.index",compact('procedLabs','msg'));
     }
 
 
@@ -125,6 +129,7 @@ class ProcedimientoLaboratorioController extends Controller
         $proced->delete();
 
         $procedLabs = Procedimientolaboratorio::all()->sortByDesc("updated_at");;
-        return view("procedimientoLaboratorio.index",compact('procedLabs'));
+        $msg = "Registro eliminado...";
+        return view("procedimientoLaboratorio.index",compact('procedLabs','msg'));
     }
 }

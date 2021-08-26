@@ -52,9 +52,13 @@ Route::resource('ciclos','App\Http\Controllers\CicloController');
 Route::resource('ciclo2s','App\Http\Controllers\Ciclo2Controller');
 
 Route::get('ciclosListado','App\Http\Controllers\Ciclo2Controller@listadoCiclos');
+Route::post('ciclosListado','App\Http\Controllers\Ciclo2Controller@filtrarCiclos');
 
 Route::get('ciclosTest','App\Http\Controllers\CicloController@test');
 Route::post('ciclosTest','App\Http\Controllers\CicloController@guardar');
+
+Route::get("paciente/rut",'App\Http\Controllers\PacienteController@rut')->name("paciente.rut");
+Route::get("conyuge/rut",'App\Http\Controllers\ConyugeController@rut')->name("conyuge.rut");
 
 
 // CICLOS PACIENTES

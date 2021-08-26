@@ -14,5 +14,12 @@
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.4",
+        "datatables.net-buttons-dt": "^1.7.1",
+        "datatables.net-dt": "^1.1.0",
+        "moment": "^2.29.1",
+        "toastr": "^2.1.4"
     }
 }

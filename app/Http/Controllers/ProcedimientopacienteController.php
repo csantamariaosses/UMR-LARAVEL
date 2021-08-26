@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Procedimientopaciente;
 use Illuminate\Http\Request;
-use App\Models\Procedimientopabellon;
 
-class ProcedimientoPabellonController extends Controller
+class ProcedimientopacienteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +15,6 @@ class ProcedimientoPabellonController extends Controller
     public function index()
     {
         //
-        $msg = "";
-        $procedsPab = Procedimientopabellon::all()->sortByDesc("updated_at");
-        return view("procedimientoPabellon.index",compact('procedsPab','msg'));
     }
 
     /**
@@ -44,10 +41,10 @@ class ProcedimientoPabellonController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Procedimientopaciente  $procedimientopaciente
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Procedimientopaciente $procedimientopaciente)
     {
         //
     }
@@ -55,10 +52,10 @@ class ProcedimientoPabellonController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Procedimientopaciente  $procedimientopaciente
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Procedimientopaciente $procedimientopaciente)
     {
         //
     }
@@ -67,10 +64,10 @@ class ProcedimientoPabellonController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Procedimientopaciente  $procedimientopaciente
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Procedimientopaciente $procedimientopaciente)
     {
         //
     }
@@ -78,10 +75,10 @@ class ProcedimientoPabellonController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Procedimientopaciente  $procedimientopaciente
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Procedimientopaciente $procedimientopaciente)
     {
         //
     }

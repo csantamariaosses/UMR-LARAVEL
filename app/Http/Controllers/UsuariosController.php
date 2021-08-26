@@ -59,7 +59,8 @@ class UsuariosController extends Controller
                              ->orderBy('subMenu')
                              ->get();
                              */
-            return view("usuarios.wellcome",compact('email'));
+            $msg = "";
+            return view("usuarios.wellcome",compact('email','msg'));
         } else {
             /*
             $parametros = DB::table('parametros')->get();  
@@ -97,7 +98,8 @@ class UsuariosController extends Controller
 
     public function home(){
         //return redirect "usuarios.home";
-        return view("usuarios.wellcome");
+        $msg = "";
+        return view("usuarios.wellcome", compac('msg'));
     }
 
 

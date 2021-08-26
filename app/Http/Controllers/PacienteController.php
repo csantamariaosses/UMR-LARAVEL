@@ -23,7 +23,7 @@ class PacienteController extends Controller
         //
         $msg = "";
         $pacientes = Paciente::all()->sortByDesc("updated_at");
-        
+        $conteo = count( $pacientes );
         return view("pacientes.index",compact('pacientes','msg'));
     }
 
@@ -54,6 +54,7 @@ class PacienteController extends Controller
         $telefono = $request->input("telefono");
         $fechaNac = $request->input("fechaNac");
         $diagnostico = $request->input("diagnostico");
+        $antecedMorbidos = $request->input("antecedMorbidos");
         $observaciones = $request->input("observaciones");
 
 
@@ -65,7 +66,6 @@ class PacienteController extends Controller
         $telefonoC = $request->input("telefonoConyuge");
         $fechaNacC = $request->input("fechaNacConyuge");
         $observacionesC = $request->input("observacionesConyuge");
-        $antecMorbidosC = $request->input("antecMorbidosConyuge");
 
 
         $msg = "";
@@ -78,6 +78,7 @@ class PacienteController extends Controller
         if( $fechaNac == null ) { $fechaNac = ""; }
         if( $rutConyuge == null ) { $rutConyuge = ""; }
         if( $diagnostico == null ) { $diagnostico = ""; }
+        if( $antecedMorbidos == null ) { $antecedMorbidos = ""; }
         if( $observaciones == null ) { $observaciones = ""; }
 
 
@@ -85,9 +86,6 @@ class PacienteController extends Controller
         if( $nombreC == null ) { $nombreC = ""; }
         if( $direccionC == null ) { $direccionC = ""; }
         if( $emailC == null ) { $emailC = ""; }
-        if( $telefonoC == null ) { $telefonoC = ""; }
-        if( $fechaNacC == null ) { $fechaNacC = ""; }
-        if( $antecMorbidosC == null ) { $antecMorbidosC = ""; }
         if( $observacionesC == null ) { $observacionesC = ""; }
 
         //$id = DB::table('pacientes')->select('id')->where('rut', 'like', '%$rut%')->first();
@@ -95,11 +93,29 @@ class PacienteController extends Controller
         //dd( $paciente );
 
         if( $paciente > 0  ) {
-            $msg =  $msg ."\nPaciente Ya Existe...!";
+            $msg =  $msg ."\nPaciente Ya Existe... actualizando...!";
+            
+            $paciente = Paciente::where('rut', '=', $rut)->get()->first();
+            //dd( $paciente->id);
+            
+            $registro = Paciente::find($paciente->id);
+            $registro->rut = $rut;
+            $registro->nombre = $nombre;
+            $registro->direccion = $direccion;
+            $registro->fechaNacimiento = $fechaNac;
+            $registro->edad = Carbon::parse($registro->fechaNacimiento)->age;
+            $registro->telefono = $telefono;
+            $registro->email = $email;
+            $registro->diagnostico = $diagnostico;
+            $registro->observaciones = $observaciones;
+            $registro->antecedMorbidos = $antecedMorbidos;
+            $registro->rutConyuge = $rutC;
+
+            $registro->save();
+
             $pacientes = Paciente::all()->sortByDesc("updated_at");
             return view("pacientes.index",compact('pacientes', 'msg'));
         } else {
-            $msg  = $msg . "Agregando paciente";
             //echo "FechaNac:" . $fechaNac;
             $paciente = new Paciente();
             $paciente->rut = $rut;
@@ -110,37 +126,40 @@ class PacienteController extends Controller
             $paciente->fechaNacimiento = $fechaNac;
             $paciente->edad = Carbon::parse($paciente->fechaNacimiento)->age;
             $paciente->diagnostico = $diagnostico;
+            $paciente->antecedMorbidos = $antecedMorbidos;
             $paciente->rutConyuge = $rutConyuge;
             $paciente->observaciones = $observaciones;
 
-            $paciente->save();
-            $pacientes = Paciente::all()->sortByDesc("updated_at");
+            $paciente->save();            
             $msg = $msg . "\nPaciente agregado exitosamente";
 
-            
-            $conyuge = Conyuge::where('rut', '=', $rutC)->get()->count();
-            if( $conyuge > 0  ) {
-                $msg = $msg .  "\nConyuge Ya Existe...!";
+            if( $rutC != "") {
+                $conyuge = Conyuge::where('rut', '=', $rutC)->get()->count();
+                if( $conyuge > 0  ) {
+                    $msg = $msg .  "\nConyuge Ya Existe...!";
+                    $pacientes = Paciente::all()->sortByDesc("updated_at");
+                    return view("pacientes.index",compact('pacientes', 'msg'));
+                } else {
+                    $conyuge = new Conyuge();
+                    $conyuge->rut = $rutC;
+                    $conyuge->nombre = $nombreC;
+                    $conyuge->direccion = $direccionC;
+                    $conyuge->email = $emailC;
+                    $conyuge->telefono = $telefonoC;
+                    $conyuge->fechaNacimiento = $fechaNacC;
+                    $conyuge->edad = Carbon::parse($conyuge->fechaNacimiento)->age;
+                    $conyuge->observaciones = $observacionesC;
+        
+                    $conyuge->save();
+                    $pacientes = Paciente::all()->sortByDesc("updated_at");
+                    $msg = $msg . "Conyuge agregado exitosamente";
+                    return view("pacientes.index",compact('pacientes','msg'));
+                }
+            }   else {
                 $pacientes = Paciente::all()->sortByDesc("updated_at");
                 return view("pacientes.index",compact('pacientes', 'msg'));
-            } else {
-                $conyuge = new Conyuge();
-                $conyuge->rut = $rutC;
-                $conyuge->nombre = $nombreC;
-                $conyuge->direccion = $direccionC;
-                $conyuge->email = $emailC;
-                $conyuge->telefono = $telefonoC;
-                $conyuge->fechaNacimiento = $fechaNacC;
-                $conyuge->edad = Carbon::parse($conyuge->fechaNacimiento)->age;
-                $conyuge->antecedMorbidos = $antecMorbidosC;
-                $conyuge->observaciones = $observacionesC;
-    
-                $conyuge->save();
-                $pacientes = Paciente::all()->sortByDesc("updated_at");
-                $msg = $msg . "Conyuge agregado exitosamente";
-
-                return view("pacientes.index",compact('pacientes','msg'));
             }
+
         }
     }
 
@@ -166,7 +185,8 @@ class PacienteController extends Controller
             $conyuge->antecedMorbidos = "";
             $conyuge->observaciones = "";
             $pacientes = Paciente::all()->sortByDesc("updated_at");
-            return view('pacientes.edit', compact('paciente','pacientes','conyuge'));
+            $msg = "";
+            return view('pacientes.edit', compact('paciente','pacientes','conyuge', 'msg'));
 
         } else {
            // echo "<br>Busca dtaos del conyuge:" . $paciente->rutConyuge;
@@ -185,17 +205,17 @@ class PacienteController extends Controller
                 $conyuge->emailC = "";
                 $conyuge->telefonoC = "";
                 $conyuge->fechaNacimientoC = "";
-                $conyuge->antecedMorbidosC = "";
                 $conyuge->observacionesC = "";
                 $pacientes = Paciente::all()->sortByDesc("updated_at");
-                return view('pacientes.edit', compact('paciente','pacientes','conyuge'));
+                $msg = "";
+                return view('pacientes.edit', compact('paciente','pacientes','conyuge','msg'));
             } else {
                 //echo "Encontrado";
                 //echo "RUT:". $conyuge_[0]->rut;
                 $conyuge = $conyuge_[0];
                 $pacientes = Paciente::all()->sortByDesc("updated_at");
-    
-                return view('pacientes.edit', compact('paciente','pacientes','conyuge'));
+                $msg = "";
+                return view('pacientes.edit', compact('paciente','pacientes','conyuge','msg'));
                 
             }
         }
@@ -233,6 +253,7 @@ class PacienteController extends Controller
         $telefono = $request->input('telefono');
         $email = $request->input('email');
         $diagnostico = $request->input('diagnostico');
+        $antecedMorbidos = $request->input('antecedMorbidos');
         $observaciones = $request->input('observaciones');
         $rutC = $request->input('rutConyuge');
 
@@ -241,6 +262,7 @@ class PacienteController extends Controller
         if( $telefono == null ) { $telefono = ""; }
         if( $fechaNac == null ) { $fechaNac = ""; }
         if( $telefono == null ) { $telefono = ""; }
+        if( $antecedMorbidos == null ) { $antecedMorbidos = ""; }
         if( $observaciones == null ) { $observaciones = ""; }
         if( $rutC == null ) { $rutC = ""; }
 
@@ -256,8 +278,12 @@ class PacienteController extends Controller
         $registro->edad = Carbon::parse($registro->fechaNacimiento)->age;
         $registro->telefono = $telefono;
         $registro->email = $email;
-        $registro->rutConyuge = $rutC;
+        $registro->diagnostico = $diagnostico;
         $registro->observaciones = $observaciones;
+        $registro->antecedMorbidos = $antecedMorbidos;
+        $registro->rutConyuge = $rutC;
+
+    
 
         $registro->save();
 
@@ -270,8 +296,7 @@ class PacienteController extends Controller
         $direccionC = $request->input('direccionConyuge');
         $fechaNacC = $request->input('fechaNacConyuge');
         $telefonoC = $request->input('telefonoConyuge');
-        $emailC = $request->input('emailConyuge');
-        $antecMorbC = $request->input('antecMorbConyuge');
+        $emailC = $request->input('emailConyuge');       
         $observacionesC = $request->input('observacionesConyuge');
 
         if( $rutC == null ) { $rutC = ""; }
@@ -285,7 +310,7 @@ class PacienteController extends Controller
 
         $conyuge = Conyuge::where('rut', '=', $rutC)->get()->count();
         if( $conyuge > 0  ) {
-            $msg = $msg .  "\nConyuge Ya Existe . Se actualizxa...!";
+            $msg = $msg .  "\nConyuge actualizado...!";
 
             $registro = Conyuge::where('rut','=',$rutC)->get()->first();
             $registro->rut = $rutC;
@@ -295,7 +320,6 @@ class PacienteController extends Controller
             $registro->edad = Carbon::parse($registro->fechaNacimiento)->age;
             $registro->telefono = $telefonoC;
             $registro->email = $emailC;
-            $registro->antecedMorbidos = $antecMorbC;
             $registro->observaciones = $observacionesC;
 
             $registro->save();
@@ -313,7 +337,6 @@ class PacienteController extends Controller
             $conyuge->telefono = $telefonoC;
             $conyuge->fechaNacimiento = $fechaNacC;
             $conyuge->edad = Carbon::parse($conyuge->fechaNacimiento)->age;
-            $conyuge->antecedMorbidos = $antecMorbC;
             $conyuge->observaciones = $observacionesC;
 
             $conyuge->save();
@@ -353,6 +376,12 @@ class PacienteController extends Controller
 
     public function nuevoCiclo( $rut ) {
         echo "Crear Nuevo Ciclo Rut:". $rut;
+    }
+
+    public function rut( Request $request ) {
+        $rutPaciente = Paciente::where('rut','=',$request->get("rut"))->get()->first();
+    
+        return response()->json( ['success'=> $rutPaciente]);
     }
 }
 

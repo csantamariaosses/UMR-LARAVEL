@@ -38,8 +38,7 @@ class ProcedPabController extends Controller
     public function store(Request $request)
     {
         //
-        echo "Store";
-        
+            
         $codigo = $request->input("codigo");
         $nombre = $request->input("nombre");
         $precio = $request->input("precio");
@@ -61,7 +60,8 @@ class ProcedPabController extends Controller
         }
         
         $procedPabs = ProcedPab::all()->sortByDesc("updated_at");;
-        return view("procedPabs.index",compact('procedPabs'));
+        $msg = "Registro agregado...";
+        return view("procedPabs.index",compact('procedPabs','msg'));
         
     }
 
@@ -75,8 +75,9 @@ class ProcedPabController extends Controller
     {
         //
         $procedPab  = ProcedPab::find($id);
-        $procedPabs = ProcedPab::all()->sortByDesc("updated_at");;
-        return view('procedPabs.edit', compact('procedPab','procedPabs'));
+        $procedPabs = ProcedPab::all()->sortByDesc("updated_at");
+        $msg = "";
+        return view('procedPabs.edit', compact('procedPab','procedPabs','msg'));
     }
 
     /**
@@ -99,9 +100,6 @@ class ProcedPabController extends Controller
      */
     public function update(Request $request, ProcedPab $procedPab)
     {
-        //
-
-        echo  "uPDATE::" . $procedPab;
 
         $codigo = $request->input('codigo');
         $nombre = $request->input('nombre');
@@ -113,8 +111,9 @@ class ProcedPabController extends Controller
         $registro->precio = $precio;
         $registro->save();
 
+        $msg = "Registro actualizado...";
         $procedPabs = ProcedPab::all()->sortByDesc("updated_at");;
-        return view("procedPabs.index",compact('procedPabs'));
+        return view("procedPabs.index",compact('procedPabs','msg'));
         
     }
 
@@ -130,7 +129,8 @@ class ProcedPabController extends Controller
         $proced = ProcedPab::find($procedPab)->first();        
         $proced->delete();
 
+        $msg = "Registro eliminado...";
         $procedPabs = ProcedPab::all()->sortByDesc("updated_at");;
-        return view("procedPabs.index",compact('procedPabs'));
+        return view("procedPabs.index",compact('procedPabs','msg'));
     }
 }

@@ -49,7 +49,16 @@
             @if( count( $ciclo2s ) >0 )    
                 <table id="ciclos" class="table table-dark table-striped mt-4  listado">    
                     <thead>
-                    <tr><td>Id</td><td>Estado</td><td>Rut</td><td>Nombre</td><td>Conyuge</td><td>Medico</td><td>Fecha</td><td>Acción</td></tr>
+                    <tr><td>Id</td>
+                    <td>Estado</td>
+                    <td>Rut</td>
+                    <td>Nombre</td>
+                    <td>Conyuge</td>
+                    <td>Medico</td>
+                    <td>FechaRegla</td>
+                    <td>Fecha</td>
+                    <td>Acción</td>
+                  </tr>
                     </thead>
                     <tbody>
                 @foreach($ciclo2s as $ciclo2 )
@@ -88,6 +97,7 @@
                         @endif
 
                     </td>
+                    <td>{{ $ciclo2->fechaRegla }}</td>
                     <td>{{ $ciclo2->updated_at }}</td>
                     <td>
                      <div>

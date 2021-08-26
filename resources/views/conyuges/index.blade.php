@@ -1,4 +1,8 @@
 @extends('layouts.layout')
+@section("css")
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
+<!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css"/> -->
+@stop
 
 @section('content')
 <div class="container">
@@ -7,11 +11,7 @@
            <h4>CONYUGES</h4>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-        <div class="alert alert-danger">{{$msg}}</div>
-        </div>
-    </div>
+    
     <div class="row mt-4">
         <div class="col-sm-6">
              <form method="POST" action="/conyuges">
@@ -19,7 +19,7 @@
             
                 <p>DATOS CONYUGE</p>  
                 <table class="datosPaciente">
-                     <tr><td align="right">Rut:&nbsp;</td><td><input type="text" name="rutConyuge"  id="rutConyuge"></td></tr>
+                     <tr><td align="right">Rut:&nbsp;</td><td><input type="text" name="rutConyuge"  id="rutConyuge" onBlur="verifRutConyuge( this)"></td></tr>
                      <tr><td align="right">Nombre:&nbsp;</td><td><input type="text" name="nombreConyuge"  id="nombreConyuge" size="60"></td></tr>
                      <tr><td align="right">Direccion:&nbsp;</td><td><input type="text" name="direccionConyuge"  id="direccionConyuge" size="60"></td></tr>
                      <tr><td align="right">Email:&nbsp;</td><td><input type="email" name="emailConyuge"  id="emailConyuge" size="60"></td></tr>
@@ -48,7 +48,7 @@
 <div class="row">
         <div class="col-sm-12 justify-content-left">
             @if( count( $conyuges) >0 )    
-                <table class="table table-dark table-striped mt-4  listado">    
+                <table id="conyuges" class="table table-dark table-striped mt-4  listadoPacteConyuge">    
                     <thead>
                     <tr><td>Id</td><td>Rut</td><td>Nombre</td><td>FechaNac.</td><td>Edad</td><td>Telefono</td><td>Acción</td></tr>
                     </thead>
@@ -107,4 +107,46 @@
 </div>
  @endforeach
 @stop
+
+
+@section("js")
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+ 
+<script>
+$(document).ready(function() {
+    $('#conyuges').DataTable();
+} );
+</script>
+<script>
+  function verifRutConyuge( rut ) {
+        console.log("Rut:" + rut.value);
+        var _rut = rut.value;
+        
+        $.ajax({
+            type: "get",
+            url: "{{route('conyuge.rut')}}", 
+            dataType:'json',
+            data: { rut:_rut },
+            success: function ( data ) {
+                console.log( data  );
+                if( data.success != null ) { 
+                    $("#nombreConyuge").val( data.success.nombre ); 
+                    $("#direccionConyuge").val( data.success.direccion ); 
+                    $("#emailConyuge").val( data.success.email ); 
+                    $("#telefonoConyuge").val( data.success.telefono ); 
+                    $("#fechaNacConyuge").val( data.success.fechaNacimiento ); 
+                    $("#diagnosticoConyuge").val( data.success.diagnostico ); 
+                    $("#observacionesConyuge").val( data.success.observaciones ); 
+                }                               
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+               console.log("Status: " + textStatus); ; 
+            }     
+        });
+        
+    }
+</script>
+@stop
+
 

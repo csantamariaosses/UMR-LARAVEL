@@ -36,7 +36,7 @@ class CreateCiclo2sTable extends Migration
             ->references('id')
             ->on('conyuges');
 
-            $table->date("fechaRegla");  
+            $table->date("fechaRegla")->nullable();;  
             $table->integer("culdosentesis");  
             $table->string("fechaCuldosentesis"); 
             
@@ -50,8 +50,12 @@ class CreateCiclo2sTable extends Migration
             $table->string("codProcedimientos");  
             $table->string("procedimientos");  
             $table->string("aco");  
-            $table->string("hgc");
-            $table->string("resultadoBetaHgc");            
+            $table->string("HCG");
+
+            $table->datetime("fechaHoraHCG")->nullable();
+            $table->datetime("fechaHoraPabellon")->nullable();
+
+            $table->string("resultadoBetaHCG");            
             $table->string("resultadoFecund");
 
             $table->string("observaciones");
