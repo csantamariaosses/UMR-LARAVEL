@@ -24,7 +24,7 @@
                      <tr><td align="right">Direccion:&nbsp;</td><td><input type="text" name="direccion"  id="direccion" size="40"></td></tr>
                      <tr><td align="right">Email:&nbsp;</td><td><input type="email" name="email"  id="email" size="40" required></td></tr>
                      <tr><td align="right">Telefono:&nbsp;</td><td><input type="text" name="telefono"  id="telefono" required></td></tr>
-                     <tr><td align="right">Fecha Nac.:&nbsp;</td><td><input type="date" name="fechaNac"  id="fechaNac" required onBlur="calcularEdad2(this)">&nbsp;&nbsp;&nbsp;Edad:<span id="edadPcte"></span>&nbsp;años</td></tr>
+                     <tr><td align="right">Fecha Nac.:&nbsp;</td><td><input type="date" name="fechaNac"  id="fechaNac" required onBlur="calcularEdadPacte(this)">&nbsp;&nbsp;&nbsp;Edad:<span id="edadPcte"></span>&nbsp;años</td></tr>
                      <tr><td align="right">Diagnóstico:&nbsp;</td><td><textarea name="diagnostico" id="diagnostico"  cols="40" rows="2" ></textarea></td></tr>
                      <tr><td align="right">Anteed. Morbidos:&nbsp;</td><td><textarea name="antecedMorbidos"  id="antecedMorbidos" cols="40" rows="2" ></textarea></td></tr>
                      <tr><td align="right">Observaciones:&nbsp;</td><td><textarea name="observaciobnes" id="observaciobnes" cols="40" rows="3"></textarea></td></tr>
@@ -40,7 +40,7 @@
                      <tr><td align="right">Direccion:&nbsp;</td><td><input type="text" name="direccionConyuge"  id="direccionConyuge" size="40"></td></tr>
                      <tr><td align="right">Email:&nbsp;</td><td><input type="email" name="emailConyuge"  id="emailConyuge" size="40"></td></tr>
                      <tr><td align="right">Telefono:&nbsp;</td><td><input type="text" name="telefonoConyuge"  id="telefonoConyuge"></td></tr>
-                     <tr><td align="right">Fecha Nac.:&nbsp;</td><td><input type="date" name="fechaNacConyuge"  id="fechaNacConyuge"></td></tr>
+                     <tr><td align="right">Fecha Nac.:&nbsp;</td><td><input type="date" name="fechaNacConyuge"  id="fechaNacConyuge" onBlur="calcularEdadConyuge(this)">&nbsp;&nbsp;&nbsp;Edad:<span id="edadConyuge"></span>&nbsp;años</td></tr>
                      <tr><td align="right">Observaciones:&nbsp;</td><td><textarea name="observacionesConyuge" id="observacionesConyuge" cols="40" rows="3"></textarea></td></tr>
                      <tr><td></td><td><button type="submit" class="btn btn-secondary">Guardar</button></td></tr>
                 </table>
@@ -266,11 +266,15 @@ $(document).ready(function() {
         return edad;
     }
 
-    function calcularEdad2( fecha ) {
+    function calcularEdadPacte( fecha ) {
         var edad = calcularEdad( fecha.value);
         document.getElementById("edadPcte").innerHTML = edad;
     }
 
+    function calcularEdadConyuge( fecha ) {
+        var edad = calcularEdad( fecha.value);
+        document.getElementById("edadConyuge").innerHTML = edad;
+    }
     
 </script>
 @stop
