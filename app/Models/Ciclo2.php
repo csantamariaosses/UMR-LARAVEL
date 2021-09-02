@@ -24,4 +24,8 @@ class Ciclo2 extends Model
     public function estadociclo(){
         return $this->belongsTo( 'App\Models\Estadociclo');
     }
+
+    public function procedimiento(){
+        return $this->belongsTo( 'App\Models\Procedimiento');
+    }
 }

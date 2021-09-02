@@ -142,22 +142,34 @@
                 </ul>
             </li>
 
-            <li class="active"><a href="{{ url('salir') }}">Salir</a></li>
+            <li class="active">
+            <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>    
+            
+            </li>
             </ul>
         </div>
         </nav>
         </div>
    </div>
 </div>
-
-@if( $msg !="")
-<div class="container">
-   <div class="row" id="msg">
-        <div class="col-sm-12">
-            <div class="alert alert-danger"><button class="btn btn-sm" onClick="cerrarMsg()">X</button> &nbsp;&nbsp;&nbsp;{{$msg}}</div>
+@if( isset( $msg ))
+    @if( $msg !="")
+    <div class="container">
+    <div class="row" id="msg">
+            <div class="col-sm-12">
+                <div class="alert alert-danger"><button class="btn btn-sm" onClick="cerrarMsg()">X</button> &nbsp;&nbsp;&nbsp;{{$msg}}</div>
+            </div>
         </div>
     </div>
-</div>
+    @endif
 @endif
 
 @yield('content')  

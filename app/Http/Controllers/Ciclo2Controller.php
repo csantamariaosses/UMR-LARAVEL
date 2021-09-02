@@ -9,6 +9,7 @@ use App\Models\Medico;
 use App\Models\Procedimientolaboratorio;
 use App\Models\Procedimientopabellon;
 use App\Models\Procedimientopaciente;
+use App\Models\Procedimiento;
 use App\Models\Estadociclo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,13 +27,13 @@ class Ciclo2Controller extends Controller
         
         $msg = "";
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");
-        
+        $procedimientos = Procedimiento::all();
         if( count( $ciclo2s ) == 0 ) { 
             echo "Ciclos vacio";
         }
 
 
-        return view("ciclo2s.index",compact('ciclo2s','msg'));
+        return view("ciclo2s.index",compact('ciclo2s','procedimientos','msg'));
     }
 
     /**
@@ -74,6 +75,7 @@ class Ciclo2Controller extends Controller
         }
         
         $ciclo2 = new Ciclo2();
+        $ciclo2->procedimiento_id = 1;
         $ciclo2->estadociclo_id = 1;
         $ciclo2->medico_id = null;
         $ciclo2->paciente_id = $paciente->id;  
@@ -99,10 +101,12 @@ class Ciclo2Controller extends Controller
         
         $msg = "Ciclo creado exitosamente";
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");
+        $procedimientos = Procedimiento::all();
+        $estadociclos = Estadociclo::all();
         //echo "Pac:". $ciclo2s->paciente->nombre;
 
 
-        return view("ciclosListado",compact('ciclo2s','msg')); 
+        return view("ciclo2s.index",compact('ciclo2s','procedimientos','estadociclos','msg')); 
     }
 
     /**
@@ -119,9 +123,10 @@ class Ciclo2Controller extends Controller
         $procedLabs = Procedimientolaboratorio::all();
         $medicos = Medico::all();
         $estadociclos = Estadociclo::all();
+        $procedimientos = Procedimiento::all();
    
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");;
-        return view('ciclo2s.edit', compact('ciclo2s','ciclo2','procedLabs','medicos','estadociclos','msg'));
+        return view('ciclo2s.edit', compact('ciclo2s','ciclo2','procedimientos','procedLabs','medicos','estadociclos','msg'));
     }
 
     /**
@@ -177,7 +182,12 @@ class Ciclo2Controller extends Controller
             $medico = null;
         }
         
+        // PROCEDIMIENTO-CICLO
+        $procedimiento = $request->input('procedimiento');
+         // ESTADO CICLO
+        $estadociclo = $request->input("estadociclo"); 
     
+
         // PROCEDS  PABELLON
         $culdo = $request->input("culdosentesis");
         $transf = $request->input("transferencia");
@@ -252,8 +262,7 @@ class Ciclo2Controller extends Controller
         // RESULTADO FECUNDACION
         $resultadoFecund = $request->input("resultadoFecund");
 
-        // ESTADO CICLO
-        $estadociclo = $request->input("estadociclo"); 
+       
 
       
         // VALIDACIONES
@@ -325,6 +334,9 @@ class Ciclo2Controller extends Controller
         // ACTUALIZA CICLO
         $ciclo2 = Ciclo2::find($ciclo2->id);
         //$ciclo2->rutConyuge = $conyuge->id;
+        $ciclo2->procedimiento_id = $procedimiento;
+        $ciclo2->estadociclo_id = $estadociclo;
+
         $ciclo2->culdosentesis = $culdo;
         $ciclo2->fechaCuldosentesis = $fechaCuldosentesis;
         $ciclo2->fechaTransferencia = $fechaTransferencia;
@@ -344,7 +356,7 @@ class Ciclo2Controller extends Controller
         $ciclo2->betaPositivo = $betaPositivo;
         $ciclo2->betaNegativo = $betaNegativo;
         $ciclo2->fechaBeta = $fechaBeta;
-        $ciclo2->estadociclo_id = $estadociclo;
+        
         $ciclo2->observaciones = $observacionesCiclo;
         
         $ciclo2->save();
@@ -376,7 +388,8 @@ class Ciclo2Controller extends Controller
 
         $procedimientoPabs = Procedimientopabellon::all();
         $procedimientoLabs = Procedimientolaboratorio::all();
-        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientoPabs','procedimientoLabs'));
+        $procedimientos = Procedimiento::all();
+        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientos','procedimientoPabs','procedimientoLabs'));
 
 
     }
@@ -401,11 +414,13 @@ class Ciclo2Controller extends Controller
     public function listadoCiclos(){
         $msg = "";
         $ciclo2s = Ciclo2::all()->sortByDesc("updated_at");
+        $procedimientos = Procedimiento::all();
         $estadociclos = Estadociclo::all();
+        
 
         $procedimientoPabs = Procedimientopabellon::all();
         $procedimientoLabs = Procedimientolaboratorio::all();
-        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientoPabs','procedimientoLabs'));
+        return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
     }
 
 
@@ -413,18 +428,101 @@ class Ciclo2Controller extends Controller
 
         $fechaDesde = $request->input("fechaDesde");
         $fechaHasta = $request->input("fechaHasta");
-        $estadociclo = $request->input("estadociclo");
-        $procedimientoPab = $request->input("procedimientoPab");
-
+        $procedimiento = $request->input("procedimientos");
+        $estadociclo    = $request->input("estadociclo");
+        
+/*
         echo "<br>fechaDesde:" . $fechaDesde;
         echo "<br>fechaHasta:" . $fechaHasta;
+        echo "<br>procedimiento:" . $procedimiento;
         echo "<br>estado:" . $estadociclo;
-        echo "<br>procedimientoPab:" . $procedimientoPab;
-
+*/
         $msg = "";
+
+        if( !isset( $fechaDesde)) {
+            $fecha_actual = date("Y-m-d");
+            $fechaDesde = date("Y-m-d",strtotime($fecha_actual. " - 1 month"));
+        }
+
+        if( !isset( $fechaHasta)) {
+            $fecha_actual = date("Y-m-d");
+            $fechaHasta = date("Y-m-d",strtotime($fecha_actual. " + 2 month"));
+        }
+/*
+        echo "<br>******";
+        echo "<br>fechaDesde:" . $fechaDesde;
+        echo "<br>fechaHasta:" . $fechaHasta;
+        echo "<br>procedimiento:" . $procedimiento;
+        echo "<br>estado:" . $estadociclo;
+*/
+        if( $estadociclo != "0" && $procedimiento != "0" ) {
+            $ciclo2s = Ciclo2::whereBetween('fechaRegla', [$fechaDesde, $fechaHasta])
+                        ->where('procedimiento_id','=',$procedimiento)
+                        ->where('estadociclo_id','=',$estadociclo)
+            ->get();    
+            $estadociclos = Estadociclo::all();                         
+            $procedimientos    = Procedimiento::all();
+            $procedimientoPabs = Procedimientopabellon::all();
+            $procedimientoLabs = Procedimientolaboratorio::all();
+        
+            return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
+    
+        } 
+        
+        if( $estadociclo != "0" && $procedimiento == "0" ) {
+            $ciclo2s = Ciclo2::whereBetween('fechaRegla', [$fechaDesde, $fechaHasta])
+                        ->where('estadociclo_id','=',$estadociclo)
+            ->get();    
+            $estadociclos = Estadociclo::all();                         
+            $procedimientos    = Procedimiento::all();
+            $procedimientoPabs = Procedimientopabellon::all();
+            $procedimientoLabs = Procedimientolaboratorio::all();
+        
+            return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
+    
+        } 
+
+        if( $estadociclo == "0" && $procedimiento != "0" ) {
+            $ciclo2s = Ciclo2::whereBetween('fechaRegla', [$fechaDesde, $fechaHasta])
+                        ->where('procedimiento_id','=',$procedimiento)
+            ->get();    
+            $estadociclos = Estadociclo::all();                         
+            $procedimientos    = Procedimiento::all();
+            $procedimientoPabs = Procedimientopabellon::all();
+            $procedimientoLabs = Procedimientolaboratorio::all();
+        
+            return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
+    
+        } 
+
+
+        if( $estadociclo == "0" && $procedimiento == "0" ) {
+            $ciclo2s = Ciclo2::whereBetween('fechaRegla', [$fechaDesde, $fechaHasta])
+                       
+            ->get();    
+            $estadociclos = Estadociclo::all();                         
+            $procedimientos    = Procedimiento::all();
+            $procedimientoPabs = Procedimientopabellon::all();
+            $procedimientoLabs = Procedimientolaboratorio::all();
+        
+            return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
+    
+        } 
+
+
         $ciclo2s = Ciclo2::whereBetween('fechaRegla', [$fechaDesde, $fechaHasta])
-                         //->where('estadociclo_id','=',$estadociclo)
-                         ->get();
+            ->get();    
+        $estadociclos = Estadociclo::all();                         
+        $procedimientos    = Procedimiento::all();
+        $procedimientoPabs = Procedimientopabellon::all();
+        $procedimientoLabs = Procedimientolaboratorio::all();
+        
+        return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
+
+
+        //dd( $ciclo2s);     
+       // exit();
+        //$msg = "";
         /*
 
         $sql = " select * from ciclo2s a";
@@ -459,13 +557,15 @@ class Ciclo2Controller extends Controller
         //dd( $result );
         //$ciclo2s = $result;
         */
-
+/*
         $estadociclos = Estadociclo::all();                         
+        $procedimientos    = Procedimiento::all();
         $procedimientoPabs = Procedimientopabellon::all();
         $procedimientoLabs = Procedimientolaboratorio::all();
 
 
     
-        return view("ciclo2s.listado",compact('ciclo2s','msg','estadociclos','procedimientoPabs','procedimientoLabs'));
+        return view("ciclo2s.listado",compact('ciclo2s','msg','procedimientos','estadociclos','procedimientoPabs','procedimientoLabs'));
+        */
     }
 }

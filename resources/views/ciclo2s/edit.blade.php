@@ -141,6 +141,14 @@
                 @endif
 
                 <br><br>
+                <p><b>TIPO CICLO</b></p>
+                <select name="procedimiento">
+                        <option value="0" selected>Seleccione...</option>
+                        @foreach ($procedimientos as $key => $value)                                                    
+                            <option value="{{ $value->id }}" {{ $value->id == $ciclo2->procedimiento->id? 'selected':''}}>{{ $value->nombre }}</option>
+                        @endforeach
+                </select>
+                <br><br>
                 <p><b>ESTADO CICLO</b></p>
                 <select name="estadociclo">
                         <option value="0" selected>Seleccione...</option>

@@ -19,22 +19,18 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-        <div><b>Regla</b></div>
+            <div><b>Regla</b></div>
         </div>
         <div class="col-sm-3">
-        <div><b>Estado Ciclo</b></div>
+            <div><b>Procedimiento</b></div>
         </div>
         <div class="col-sm-3">
-        <div><b>Procedimiento</b></div>
-        </div>
-        <div class="col-sm-3">
-        
+            <div><b>Estado Ciclo</b></div>        
         </div>
     </div>
 
         
-       
-             <form method="POST" action="/ciclosListado">
+    <form method="POST" action="/ciclosListado">
                 <div class="row mt-3">    
                  @csrf
                     <div class="col-sm-3">
@@ -45,9 +41,21 @@
                     </div>
                     <div class="col-sm-3">
                         <table>
+                            <tr><td align="right">Proceds.::::&nbsp;</td><td>
+                                <select name="procedimientos">
+                                    <option value="0" selected>Todos...</option>
+                                    @foreach ($procedimientos as $key => $value)                                                    
+                                        <option value="{{ $value->id }}">{{ $value->nombre }}</option>
+                                    @endforeach
+                                </select>     
+                            </td></tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-3">
+                        <table>
                             <tr><td align="right">Estado::&nbsp;</td><td>
                             <select name="estadociclo">
-                                <option value="0" selected>Seleccione...</option>
+                                <option value="0" selected>Todos...</option>
                                 @foreach ($estadociclos as $key => $value)
                                                             
                                     <option value="{{ $value->id }}">{{ $value->nombre }}</option>
@@ -57,18 +65,7 @@
                             </tr>                    
                         </table>
                     </div>  
-                    <div class="col-sm-3">
-                        <table>
-                            <tr><td align="right">Proced.Pab:&nbsp;</td><td>
-                                <select name="procedimientoPab">
-                                    <option value="0" selected>Seleccione...</option>
-                                    @foreach ($procedimientoPabs as $key => $value)                                                    
-                                        <option value="{{ $value->codigo }}">{{ $value->nombre }}</option>
-                                    @endforeach
-                                </select>     
-                            </td></tr>
-                        </table>
-                    </div>
+                   
                     <div class="col-sm-3">
                     </div>
                 </div>
@@ -80,6 +77,7 @@
 
 
             </form>
+             
         
         <div class="col-sm-6">            
         </div>
@@ -105,6 +103,7 @@
                     <thead>
                     <tr>  <th>Acción</th>
                         <th>Id</th>
+                        <th>Procedimiento</th>
                         <th>Estado</th>
                         <th>Rut</th>
                         <th>Nombre</th>
@@ -131,6 +130,7 @@
                 <tr>
                     <td><a href="/ciclo2s/{{$ciclo2->id}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Editar</a>  </td>
                     <td>{{ $ciclo2->id}}</td>
+                    <td NOWRAP>{{ $ciclo2->procedimiento->nombre }}</td>
                     <td>{{ $ciclo2->estadociclo->nombre }}</td>
                     <td>{{ $ciclo2->paciente->rut }}</td>
                     <td>{{ $ciclo2->paciente->nombre }}</td>

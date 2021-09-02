@@ -15,10 +15,18 @@ use App\Http\Controllers\ProcedimientoPabellonController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('login');
 });
+
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Auth::routes();
 
 //Route::post("acceso", "UsuariosController@acceso");
 Route::get("home",[UsuariosController::class, "home"]);
@@ -63,3 +71,6 @@ Route::get("conyuge/rut",'App\Http\Controllers\ConyugeController@rut')->name("co
 
 // CICLOS PACIENTES
 Route::resource('cicloPacientes','App\Http\Controllers\CicloPacienteController');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

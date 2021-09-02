@@ -15,7 +15,12 @@ class CreateCiclo2sTable extends Migration
     {
         Schema::create('ciclo2s', function (Blueprint $table) {
             $table->id();
-            
+
+            $table->unsignedBigInteger('procedimiento_id')->nullable();
+            $table->foreign('procedimiento_id')
+             ->references('id')
+             ->on('procedimientos');
+             
             $table->unsignedBigInteger('estadociclo_id')->nullable();
             $table->foreign('estadociclo_id')
              ->references('id')
@@ -59,6 +64,7 @@ class CreateCiclo2sTable extends Migration
             $table->string("resultadoFecund");
 
             $table->string("observaciones");
+            
             $table->timestamps();
         });
     }
@@ -70,8 +76,6 @@ class CreateCiclo2sTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ciclos');
+        Schema::dropIfExists('ciclo2s');
     }
 }
-
-
